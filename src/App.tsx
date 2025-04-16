@@ -25,7 +25,7 @@ function AnalyticsTracker() {
       }
 
       // Set the pageView event
-      (window as any).digitalData.event = {
+      (window as any).digitalData= {
           event: "pageView",
           path: location.pathname,
       };
