@@ -12,37 +12,38 @@ import { About } from "./pages/About";
 import { Contact } from "./pages/Contact";
 import { CartItem, Product } from "./types";
 
-// Create a wrapper component that will handle the analytics tracking
 function AnalyticsTracker() {
   const location = useLocation();
 
   useEffect(() => {
-    // Update the data layer with the current path whenever location changes
-    if (typeof window !== "undefined") {
-      // Initialize digitalData object if it doesn't exist
-      if (!(window as any).digitalData) {
-        (window as any).digitalData = {};
-      }
+    const pagePath = location.pathname;
+    const pageUrl = window.location.href;
 
-      // Set the pageView event
-      (window as any).digitalData= {
-          event: "pageView",
-          path: location.pathname,
-      };
+    // Ensure digitalData object structure exists
+    window.digitalData = window.digitalData || {};
+    window.digitalData.page = {
+      pageInfo: {
+        pageName: pagePath,
+        url: pageUrl,
+      },
+    };
+
+    // Optionally trigger direct call rule
+    if (window._satellite?.track) {
+      window._satellite.track("customPageView");
     }
 
-    if (typeof window !== "undefined") {
-      // Initialize digitalData object if it doesn't exist
-      if (!(window as any).adobeDataLayer) {
-        (window as any).adobeDataLayer = {};
-      }
-
-      // Set the pageView event
-      (window as any).adobeDataLayer= {
-          event: "pageView",
-          path: location.pathname,
-      };
-    }
+    // If using Adobe Client Data Layer (ACDL), push to it
+    window.adobeDataLayer = window.adobeDataLayer || [];
+    window.adobeDataLayer.push({
+      event: "pageView",
+      page: {
+        pageInfo: {
+          pageName: pagePath,
+          url: pageUrl,
+        },
+      },
+    });
   }, [location]);
 
   return null;
@@ -78,7 +79,6 @@ function App() {
 
   return (
     <Router>
-      {/* Add the analytics tracker here */}
       <AnalyticsTracker />
 
       <div className="min-h-screen bg-gray-50">
