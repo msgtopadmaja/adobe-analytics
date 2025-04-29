@@ -30,6 +30,19 @@ function AnalyticsTracker() {
           path: location.pathname,
       };
     }
+
+    if (typeof window !== "undefined") {
+      // Initialize digitalData object if it doesn't exist
+      if (!(window as any).adobeDataLayer) {
+        (window as any).adobeDataLayer = {};
+      }
+
+      // Set the pageView event
+      (window as any).adobeDataLayer= {
+          event: "pageView",
+          path: location.pathname,
+      };
+    }
   }, [location]);
 
   return null;
