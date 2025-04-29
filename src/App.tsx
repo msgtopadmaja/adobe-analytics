@@ -1,4 +1,22 @@
 import { useState, useEffect } from "react";
+
+// Extend the Window interface to include digitalData and adobeDataLayer
+declare global {
+  interface Window {
+    digitalData?: {
+      page?: {
+        pageInfo?: {
+          pageName?: string;
+          url?: string;
+        };
+      };
+    };
+    adobeDataLayer?: Array<Record<string, any>>;
+    _satellite?: {
+      track?: (event: string) => void;
+    };
+  }
+}
 import {
   BrowserRouter as Router,
   Routes,
